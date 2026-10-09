@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumen</title>
+  
+  <!-- Modern Clean Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Markdown & Code Highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/static/styles/main.css?v=3.2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%231c1c1c'/><circle cx='50' cy='50' r='20' fill='%23f5f5f5'/></svg>">
+</head>
+<body class="dark-theme">
+
+  <div class="app-layout">
+    
+    <!-- Mobile Backdrop for Sidebar Drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- ChatGPT-style Fixed Left Sidebar (260px) -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Top Brand & New Chat Section -->
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </div>
+          <span class="brand-title">Lumen</span>
+        </div>
+
+        <button class="icon-btn sidebar-collapse-btn" id="sidebarCollapseBtn" title="Close sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Action Buttons: New Chat & Search -->
+      <div class="sidebar-actions">
+        <button class="new-chat-btn" id="newChatBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>New chat</span>
+        </button>
+
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="conversationSearchInput" placeholder="Search conversations..." autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Conversations History List (Grouped by Date) -->
+      <div class="conversations-scroll" id="conversationsScroll">
+        <div class="conversations-group" id="groupToday">
+          <div class="group-label">Today</div>
+          <div class="group-items" id="itemsToday"></div>
+        </div>
+        <div class="conversations-group" id="groupYesterday">
+          <div class="group-label">Yesterday</div>
+          <div class="group-items" id="itemsYesterday"></div>
+        </div>
+        <div class="conversations-group" id="groupPrevious7">
+          <div class="group-label">Previous 7 Days</div>
+          <div class="group-items" id="itemsPrevious7"></div>
+        </div>
+        <div class="conversations-group" id="groupOlder">
+          <div class="group-label">Older</div>
+          <div class="group-items" id="itemsOlder"></div>
+        </div>
+        <div class="empty-conversations" id="emptyConversationsState">
+          <span>No saved conversations</span>
+        </div>
+      </div>
+
+      <!-- Account / Profile Section at Bottom -->
+      <div class="sidebar-footer">
+        
+        <!-- Account Trigger Card -->
+        <div class="account-card" id="accountCardBtn" tabindex="0" role="button">
+          <div class="account-avatar" id="accountAvatar">U</div>
+          <div class="account-details">
+            <div class="account-name-row">
+              <span class="account-name" id="accountName">Guest User</span>
+              <span class="plan-badge" id="accountPlanBadge">Free</span>
+            </div>
+            <span class="account-email" id="accountEmail">Sign in to save history</span>
+          </div>
+          <div class="account-chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Account Popup Menu -->
+        <div class="account-menu" id="accountMenu">
+          <div class="menu-item menu-header-info" id="menuHeaderInfo">
+            <span class="menu-user-name" id="menuUserName">Guest User</span>
+            <span class="menu-user-plan" id="menuUserPlan">Lumen Free Plan</span>
+          </div>
+          <div class="menu-divider"></div>
+          
+          <button class="menu-item" id="menuUpgradeBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span id="menuUpgradeLabel">Upgrade to Plus (₹699)</span>
+          </button>
+
+          <button class="menu-item" id="menuAdminBtn" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Admin Verifications</span>
+          </button>
+
+          <button class="menu-item" id="menuSettingsBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span>Settings</span>
+          </button>
+
+          <div class="menu-divider"></div>
+
+          <button class="menu-item" id="menuAuthBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            <span id="menuAuthLabel">Log In / Register</span>
+          </button>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- Main Chat Workspace -->
+    <main class="main-workspace" id="mainWorkspace">
+      
+      <!-- Top Navigation Bar -->
+      <header class="top-nav">
+        <div class="top-nav-left">
+          <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" title="Open sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          
+          <div class="model-selector-pill">
+            <span class="model-name">Lumen 2.5</span>
+            <span class="model-badge" id="modelTierBadge">Standard</span>
+          </div>
+        </div>
+
+        <div class="top-nav-right">
+          <!-- Language Selector -->
+          <select id="languageSelect" class="minimal-select" aria-label="Language Mode">
+            <option value="auto">Auto-Detect</option>
+            <option value="English">English</option>
+            <option value="Hindi">Hindi (हिन्दी)</option>
+            <option value="Hinglish">Hinglish</option>
+            <option value="Spanish">Español</option>
+            <option value="French">Français</option>
+            <option value="German">Deutsch</option>
+            <option value="Bengali">Bengali (বাংলা)</option>
+            <option value="Marathi">Marathi (मराठी)</option>
+            <option value="Tamil">Tamil (தமிழ்)</option>
+            <option value="Telugu">Telugu (తెలుగు)</option>
+            <option value="Gujarati">Gujarati (ગુજરાતી)</option>
+            <option value="Urdu">Urdu (اردو)</option>
+          </select>
+
+          <!-- Raw Structured JSON Inspector Toggle -->
+          <button class="nav-tool-btn" id="jsonInspectorToggleBtn" title="Toggle Structured JSON Inspector">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            <span>JSON</span>
+          </button>
+
+          <!-- Audio SFX Toggle -->
+          <button class="nav-tool-btn" id="audioToggleBtn" title="Toggle interface audio feedback">
+            <span id="audioStatusText">Audio Off</span>
+          </button>
+
+          <!-- Top Quick Auth Action (if logged out) -->
+          <button class="top-auth-btn" id="topAuthBtn">Sign in</button>
+        </div>
+      </header>
+
+      <!-- Chat Viewport with Stream of Messages -->
+      <section class="chat-viewport" id="chatViewport">
+        
+        <!-- Minimal Welcome / Empty State ("Ready when you are.") -->
+        <div class="welcome-container" id="welcomeContainer">
+          <div class="welcome-spark">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </div>
+          <h1 class="welcome-heading">Ready when you are.</h1>
+          <p class="welcome-subtext">Ask questions, learn programming, explore mathematics, or talk through everyday topics.</p>
+
+          <div class="prompt-suggestions-row">
+            <button class="prompt-chip" data-prompt="Explain recursion in simple terms with a real-life analogy and code.">
+              <span>Explain recursion simply</span>
+            </button>
+            <button class="prompt-chip" data-prompt="I have a mild sore throat and slight headache. What precautions can I take?">
+              <span>Health symptom guidance</span>
+            </button>
+            <button class="prompt-chip" data-prompt="How do asynchronous functions and event loops work in Python and JavaScript?">
+              <span>Async programming tutor</span>
+            </button>
+            <button class="prompt-chip" data-prompt="Mujhe thermodynamics ke basic concepts simple Hindi mein samjhaiye.">
+              <span>Hinglish science tutor</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Messages Stream (Centered readable column) -->
+        <div class="messages-stream" id="messagesStream"></div>
+
+        <div class="scroll-anchor" id="scrollAnchor"></div>
+      </section>
+
+      <!-- Bottom Chat Composer Area -->
+      <footer class="composer-container">
+        <form class="composer-form" id="chatForm">
+          <div class="composer-box" id="composerBox">
+            
+            <button type="button" class="composer-btn attachment-btn" id="attachmentBtn" title="Attach file or context">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+              </svg>
+            </button>
+
+            <textarea 
+              id="messageInput" 
+              class="composer-textarea" 
+              placeholder="Message Lumen..." 
+              rows="1" 
+              required
+            ></textarea>
+
+            <button type="button" class="composer-btn voice-btn" id="voiceBtn" title="Voice input (Speech to text)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+
+            <button type="submit" class="composer-btn send-btn" id="sendBtn" title="Send message (Enter)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="19" x2="12" y2="5"></line>
+                <polyline points="5 12 12 5 19 12"></polyline>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="composer-disclaimer">
+          Lumen is an intelligent AI assistant. Verify important medical, safety, or legal facts.
+        </div>
+      </footer>
+
+    </main>
+
+    <!-- Side JSON Inspector Drawer (Collapsible) -->
+    <aside class="json-inspector-drawer" id="jsonDrawer">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <span class="drawer-title">RFC 8259 Structured JSON</span>
+          <span class="drawer-meta" id="jsonMeta">Mode: Direct Answer</span>
+        </div>
+        <div class="drawer-actions">
+          <button class="drawer-btn" id="copyJsonBtn" title="Copy raw JSON">Copy</button>
+          <button class="icon-btn" id="closeJsonDrawerBtn" title="Close drawer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="drawer-body">
+        <pre><code id="jsonPreCode" class="language-json">{}</code></pre>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- 1. Authentication Modal (Sign In / Register) -->
+  <div class="modal-backdrop" id="authModalBackdrop">
+    <div class="modal-card auth-modal">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <div class="modal-logo">Lumen</div>
+          <button class="icon-btn modal-close-btn" id="closeAuthModalBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="authTabLogin">Log In</button>
+          <button class="auth-tab" id="authTabRegister">Create Account</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Error / Info banner -->
+        <div class="auth-alert" id="authAlert" style="display: none;"></div>
+
+        <form id="authForm">
+          <div class="form-group" id="nameFormGroup" style="display: none;">
+            <label for="authNameInput">Full Name</label>
+            <input type="text" id="authNameInput" class="form-input" placeholder="e.g. Ishani Karki">
+          </div>
+
+          <div class="form-group">
+            <label for="authEmailInput">Email Address</label>
+            <input type="email" id="authEmailInput" class="form-input" placeholder="you@domain.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="authPasswordInput">Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="authPasswordInput" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+              <button type="button" class="pw-toggle-btn" id="pwToggleBtn" title="Show/hide password">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+            <label for="authConfirmPasswordInput">Confirm Password</label>
+            <input type="password" id="authConfirmPasswordInput" class="form-input" placeholder="••••••••" autocomplete="new-password">
+          </div>
+
+          <button type="submit" class="submit-btn" id="authSubmitBtn">Log In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. LUMEN Plus Upgrade & UPI QR Payment Modal (₹699 One-Time) -->
+  <div class="modal-backdrop" id="plusModalBackdrop">
+    <div class="modal-card plus-modal">
+      <div class="modal-header">
+        <div class="plus-header-content">
+          <span class="plus-eyebrow">UPGRADE YOUR EXPERIENCE</span>
+          <h2 class="plus-title">LUMEN PLUS</h2>
+          <div class="plus-price-tag">
+            <span class="plus-amount">₹699</span>
+            <span class="plus-term">One-time payment • Lifetime Entitlement</span>
+          </div>
+        </div>
+        <button class="icon-btn modal-close-btn" id="closePlusModalBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body plus-body">
+        
+        <!-- Feature Comparison Table -->
+        <div class="plans-comparison">
+          <div class="plan-col">
+            <div class="plan-col-title">Lumen Free</div>
+            <ul class="plan-perks">
+              <li>Standard model generation</li>
+              <li>35 messages per 3 hours</li>
+              <li>8-turn conversational memory</li>
+              <li>Basic educational tutoring</li>
+            </ul>
+          </div>
+          <div class="plan-col highlighted">
+            <div class="plan-col-title">Lumen Plus (₹699)</div>
+            <ul class="plan-perks">
+              <li>Priority fast-lane routing</li>
+              <li>Unlimited daily messaging</li>
+              <li>Extended 20-turn deep memory</li>
+              <li>Advanced structured tutoring</li>
+              <li>Permanent lifetime activation</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Payment Section with Exact Provided QR Code -->
+        <div class="upi-payment-section">
+          <div class="upi-qr-card">
+            <div class="upi-qr-frame">
+              <!-- Exact QR Code asset provided by user -->
+              <img src="/assets/upi_qr.jpg" alt="Lumen Plus UPI Payment QR Code" class="upi-qr-image" id="upiQrImage">
+            </div>
+            <div class="upi-instructions">
+              <span class="upi-step-badge">1. Scan &amp; Pay ₹699</span>
+              <p>Scan using any UPI app (Google Pay, PhonePe, Paytm, BHIM, or Banking UPI) to Ishani K.</p>
+            </div>
+          </div>
+
+          <!-- Payment Submission Form -->
+          <div class="upi-submission-box">
+            <span class="upi-step-badge">2. Submit Verification Details</span>
+            <p class="upi-note">Enter your 12-digit UPI Reference No. / UTR from your payment receipt for verification.</p>
+
+            <div class="payment-status-banner" id="paymentStatusBanner" style="display: none;"></div>
+
+            <form id="paymentSubmissionForm">
+              <div class="form-group">
+                <label for="utrInput">UPI Transaction Reference / UTR *</label>
+                <input type="text" id="utrInput" class="form-input" placeholder="e.g. 428901234567" required minlength="6" maxlength="32">
+              </div>
+
+              <div class="form-group">
+                <label for="screenshotInput">Payment Screenshot (Optional)</label>
+                <input type="file" id="screenshotInput" class="form-file-input" accept="image/jpeg,image/png,image/webp">
+              </div>
+
+              <button type="submit" class="submit-btn btn-plus-cta" id="submitPaymentBtn">
+                Submit Payment for Verification
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Admin Verification Portal Modal -->
+  <div class="modal-backdrop" id="adminModalBackdrop">
+    <div class="modal-card admin-modal">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">Admin Verification Portal</h2>
+          <span class="modal-subtitle">Review pending UPI ₹699 Plus payments</span>
+        </div>
+        <button class="icon-btn modal-close-btn" id="closeAdminModalBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="admin-requests-list" id="adminRequestsList">
+          <div class="empty-conversations">Loading payment requests...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Settings Modal -->
+  <div class="modal-backdrop" id="settingsModalBackdrop">
+    <div class="modal-card settings-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Settings</h2>
+        <button class="icon-btn modal-close-btn" id="closeSettingsModalBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="settings-row">
+          <div>
+            <div class="setting-label">Sound Feedback</div>
+            <div class="setting-desc">Play soft acoustic clicks on message interactions</div>
+          </div>
+          <button class="toggle-btn" id="settingsSoundToggle">Off</button>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="setting-label">Structured JSON View</div>
+            <div class="setting-desc">Always display technical JSON payload in side inspector</div>
+          </div>
+          <button class="toggle-btn" id="settingsJsonToggle">Off</button>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="setting-label">Active Plan</div>
+            <div class="setting-desc" id="settingsPlanDesc">Free Account</div>
+          </div>
+          <span class="plan-badge" id="settingsPlanBadge">Free</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Audio Manager Script -->
+  <script src="/static/scripts/audio.js?v=3.2"></script>
+  <!-- Application Client Controller Script -->
+  <script src="/static/scripts/app.js?v=3.2"></script>
+</body>
+</html>

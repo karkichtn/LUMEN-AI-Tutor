@@ -1,0 +1,22 @@
+# Environment Variables
+.env
+*.env.local
+
+# Database & Storage
+*.db
+*.sqlite
+*.sqlite3
+uploads/
+uploads/screenshots/
+
+# Python Virtual Environment & Cache
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# OS Specific
+.DS_Store
+Thumbs.db
