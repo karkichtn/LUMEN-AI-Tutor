@@ -2,6 +2,17 @@
 
 A minimal, professional conversational AI tutor and assistant inspired by ChatGPT's dark layout, built with **Python**, **FastAPI**, **SQLite**, and **Google Gemini API**.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/karkichtn/LUMEN-AI-Tutor)
+
+---
+
+## 🌐 Live Deployment Link
+
+- **Live Public URL**: [https://lumen-ai-tutor.loca.lt](https://lumen-ai-tutor.loca.lt)
+- **Localhost URL**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+> *Tip: When visiting the Localtunnel live link for the first time, click **Click to Continue** on the tunnel gateway screen to load the application.*
+
 ---
 
 ## ✦ Overview & Key Features
@@ -77,6 +88,8 @@ tikka2/
 ├── .env                          # Local environment variables
 ├── .env.example                  # Environment configuration template
 ├── .gitignore                    # Excludes secrets, databases, and uploads
+├── Procfile                      # Web process configuration for cloud hosting
+├── render.yaml                   # 1-click Render blueprint configuration
 ├── test_full_system.py           # End-to-end integration test suite
 └── test_scenarios.py             # 8 core AI tutor regression tests
 ```
@@ -114,7 +127,7 @@ ADMIN_EMAIL=admin@lumen.ai
 ADMIN_PASSWORD=Admin@Lumen2026!
 ```
 
-### 3. Running the Application
+### 3. Running Locally
 
 ```bash
 python -m backend.main
@@ -122,6 +135,17 @@ python -m backend.main
 
 Open your browser and navigate to:
 **`http://127.0.0.1:8000`**
+
+---
+
+## ☁️ 1-Click Cloud Deployment
+
+Deploy your own live cloud instance for free on **Render**:
+
+1. Click the button below:
+   [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/karkichtn/LUMEN-AI-Tutor)
+2. Enter your `GEMINI_API_KEY`.
+3. Click **Apply** — your application will be live on an HTTPS domain within minutes.
 
 ---
 

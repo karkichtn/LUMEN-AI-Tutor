@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: lumen-ai-tutor
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: HOST
+        value: 0.0.0.0
+      - key: ADMIN_EMAIL
+        value: admin@lumen.ai
+      - key: ADMIN_PASSWORD
+        value: Admin@Lumen2026!
