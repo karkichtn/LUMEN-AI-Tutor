@@ -2,14 +2,16 @@
 
 A minimal, professional conversational AI tutor and assistant inspired by ChatGPT's dark layout, built with **Python**, **FastAPI**, **SQLite**, and **Google Gemini API**.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/karkichtn/LUMEN-AI-Tutor)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20App-lumen--ai--tutor.onrender.com-00C781?style=for-the-badge&logo=render&logoColor=white)](https://lumen-ai-tutor.onrender.com)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Gemini](https://img.shields.io/badge/AI-Google%20Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 
 ---
 
-## 🌐 Live Deployment Link
+## 🌐 Live Application
 
-- **Live Public URL**: [https://lumen-ai-tutor.onrender.com](https://lumen-ai-tutor.onrender.com)
-- **Localhost URL**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- **Live URL**: [https://lumen-ai-tutor.onrender.com](https://lumen-ai-tutor.onrender.com)
+- **Localhost**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 > *Note: Hosted live on Render cloud. Free tier services spin down on inactivity and automatically spin back up in ~30–50 seconds on initial visit.*
 
