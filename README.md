@@ -8,10 +8,10 @@ A minimal, professional conversational AI tutor and assistant inspired by ChatGP
 
 ## 🌐 Live Deployment Link
 
-- **Live Public URL**: [https://lumen-ai-tutor.loca.lt](https://lumen-ai-tutor.loca.lt)
+- **Live Public URL**: [https://lumen-ai-tutor.onrender.com](https://lumen-ai-tutor.onrender.com)
 - **Localhost URL**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-> *Tip: When visiting the Localtunnel live link for the first time, click **Click to Continue** on the tunnel gateway screen to load the application.*
+> *Note: Hosted live on Render cloud. Free tier services spin down on inactivity and automatically spin back up in ~30–50 seconds on initial visit.*
 
 ---
 
