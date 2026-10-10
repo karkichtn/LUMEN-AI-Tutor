@@ -140,17 +140,6 @@ Open your browser and navigate to:
 
 ---
 
-## ☁️ 1-Click Cloud Deployment
-
-Deploy your own live cloud instance for free on **Render**:
-
-1. Click the button below:
-   [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/karkichtn/LUMEN-AI-Tutor)
-2. Enter your `GEMINI_API_KEY`.
-3. Click **Apply** — your application will be live on an HTTPS domain within minutes.
-
----
-
 ## 🔑 Administrator Access
 
 A default administrator account is automatically provisioned on first launch:
